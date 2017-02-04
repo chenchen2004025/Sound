@@ -30,4 +30,5 @@ def pre_process(wave_data, time):
     wave_data = wave_data - wave_data_mean
     wave_data = wave_data - np.max(wave_data, axis=1)
 
-def generate
+def element_wise_sub(sub_array, sub):
+    base_shape = base_element.shape
