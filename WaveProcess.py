@@ -74,7 +74,7 @@ def pitch_valid(frame, frame_number, T1, mini_L=10):
     Ef = Ef/np.max(Ef)
     z_index = np.argwhere(Ef>=T1)
     sound_segment_begin, sound_segment_end, sound_segment_duration = find_segement(z_index)
-    segment_number = len(sound_segment_begin)
+    # segment_number = len(sound_segment_begin)
     SF = np.zeros([frame_number])
     sound_segment_duration = np.array(sound_segment_duration)
     duration_long_than_miniL_index = np.argwhere(sound_segment_duration>mini_L)
