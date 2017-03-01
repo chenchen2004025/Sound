@@ -24,7 +24,7 @@ def read_wave_data(file_path):
     wave_data = wave_data.T
     # calculate the time bar
     time = np.arange(0, n_frames) * (1.0/frame_rate)
-    return wave_data, time
+    return wave_data, time, frame_rate
 
 
 def pre_process(wave_data, time):
@@ -124,3 +124,7 @@ def my_filter(b, a, x):
     y2 = np.array(y2)
     y3 = signal.lfilter(b, a, x)
     return y2
+
+
+def acf_coor(y, frame_number, vseg, vsel, pitch_min_cycle, pitch_max_cycle):
+    
