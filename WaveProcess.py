@@ -1,6 +1,9 @@
 import wave
-
+import sys
+import glob
+import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def read_wave_data(file_path):
@@ -126,5 +129,85 @@ def my_filter(b, a, x):
     return y2
 
 
-def acf_coor(y, frame_number, vseg, vsel, pitch_min_cycle, pitch_max_cycle):
-    
+def acf_coor(y, frame_number, vseg, pitch_max_cycle, pitch_min_cycle):
+    vsl = vseg.shape[0]
+    #y = y[0]
+    part_number = y.shape[1]
+    frame_size = y.shape[1]
+    period = np.zeros([frame_number])
+    for i in range(0, vsl):
+        ixb = int(vseg[i,0])
+        ixe = int(vseg[i,1])
+        ixd = ixe - ixb + 1
+        for k in range(0, ixd):
+            u = y[k + ixb -1,:]
+            ru = np.correlate(u, u, "full")
+            ru = ru[frame_size-1:-1]
+            tloc = np.argmax(ru[pitch_min_cycle:pitch_max_cycle])
+            period[k + ixb -1] = pitch_min_cycle + tloc -1
+    return period
+
+
+def pitch_valid_main(path):
+    suffix = "wav"
+    f = glob.glob(path + '\\*.' + suffix)
+    file_number = len(f)
+    period_list = []
+    span_list = []
+    pitch_list = []
+    energy_list = []
+    ind = np.zeros([file_number,2])
+    for ii in range(0, file_number):
+        wave_data, time, frame_rate = read_wave_data(f[ii])
+        wave_data = pre_process(wave_data, time)
+        wave_data2, frame_time = enframe(wave_data[1, :], 1600, 400, time)
+        frame_number = wave_data2.shape[0]
+        voice_segment, SF, Ef = pitch_valid(wave_data2, frame_number, 0.05)
+        b = np.array([0.012280, -0.039508, 0.042177, 0.000000, -0.042177, 0.039508, -0.012280])
+        a = np.array([1.000000, -5.527146, 12.854342 - 16.110307, 11.479789, -4.410179, 0.713507])
+        #xx = my_filter(b, a, wave_data[1, :])
+        yy, frame_time = enframe(wave_data[1, :], 1600, 400, time)
+        frame_number = yy.shape[0]
+        energy = []
+        for i in range(0, frame_number):
+            temp = np.abs(yy[i, :])
+            energy.append(10 * np.sum(np.log10(temp ** 2)))
+        # draw the wave
+        pitch_min_cycle = int(frame_rate / 500)
+        pitch_max_cycle = int(frame_rate / 60)
+        period = np.zeros([1, frame_number])
+        T0 = acf_coor(yy, frame_number, voice_segment, pitch_max_cycle, pitch_min_cycle)
+        ff = 12 * np.log2(T0 / 440) + 69
+        vosl = voice_segment.shape[0]
+        t_begin_eng = np.zeros([vosl, 2])
+        time_span = []
+        for k in range(0, vosl):
+            nx1 = voice_segment[k, 0]
+            nx2 = voice_segment[k, 1]
+            nx1 = voice_segment[k, 2]
+            t_begin_eng[k, 0:2] = np.array([frame_time[nx1], frame_time[nx2]])
+            time_span.append(wave_data[0, nx1] - wave_data[0, nx2])
+        result = np.zeros([2, frame_number])
+        result[0, :] = frame_time
+        result[1, :] = ff
+        time_period = np.zeros([2, frame_number])
+        time_period[0, :] = frame_time
+        time_period[1, :] = T0
+        period_list.append(result)
+        span_list.append(time_span)
+        pitch_list.append(time_period)
+        energy_list.append(energy)
+        ind[ii, 0] = voice_segment[0, 0]
+        ind[ii, 1] = voice_segment[-1, 1]
+    plt.subplot(211)
+    # plt.plot(time, wave_data[0])
+    plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
+    plt.plot(pitch_list[1][0, ind[0, 0]:ind[0, 1]], pitch_list[1][1, ind[0, 0]:ind[0, 1]], 'xr')
+    plt.title('compare of standard a correct')
+    plt.legend(('standard', 'correct'))
+    plt.subplot(212)
+    plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
+    plt.plot(pitch_list[3][0, ind[0, 0]:ind[0, 1]], pitch_list[3][1, ind[0, 0]:ind[0, 1]], 'xr')
+    plt.title('compare of standard a wrong')
+    plt.legend(('standard', 'wrong'))
+    plt.show()
