@@ -3,7 +3,7 @@ import sys
 import glob
 import os
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 def read_wave_data(file_path):
@@ -199,15 +199,15 @@ def pitch_valid_main(path):
         energy_list.append(energy)
         ind[ii, 0] = voice_segment[0, 0]
         ind[ii, 1] = voice_segment[-1, 1]
-    plt.subplot(211)
-    # plt.plot(time, wave_data[0])
-    plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
-    plt.plot(pitch_list[1][0, ind[0, 0]:ind[0, 1]], pitch_list[1][1, ind[0, 0]:ind[0, 1]], 'xr')
-    plt.title('compare of standard a correct')
-    plt.legend(('standard', 'correct'))
-    plt.subplot(212)
-    plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
-    plt.plot(pitch_list[3][0, ind[0, 0]:ind[0, 1]], pitch_list[3][1, ind[0, 0]:ind[0, 1]], 'xr')
-    plt.title('compare of standard a wrong')
-    plt.legend(('standard', 'wrong'))
-    plt.show()
+    # plt.subplot(211)
+    # # plt.plot(time, wave_data[0])
+    # plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
+    # plt.plot(pitch_list[1][0, ind[0, 0]:ind[0, 1]], pitch_list[1][1, ind[0, 0]:ind[0, 1]], 'xr')
+    # plt.title('compare of standard a correct')
+    # plt.legend(('standard', 'correct'))
+    # plt.subplot(212)
+    # plt.plot(pitch_list[0][0, ind[0,0]:ind[0,1]], pitch_list[0][1, ind[0,0]:ind[0,1]], 'ob')
+    # plt.plot(pitch_list[3][0, ind[0, 0]:ind[0, 1]], pitch_list[3][1, ind[0, 0]:ind[0, 1]], 'xr')
+    # plt.title('compare of standard a wrong')
+    # plt.legend(('standard', 'wrong'))
+    # plt.show()

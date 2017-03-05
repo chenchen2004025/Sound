@@ -46,6 +46,6 @@ class VoiceMsg(Msg):
         midia_id = xmlData.find('MediaId').text
         access_token = 'JSjUozBnWYQ3eGnR8ESdHZHZT7RRRmxvT5aSP6cwPmCKpSfxXDbfP1BjshehoGK087TMkV1jLgcBlSYqWiRbAzxcraUR-hipk1MCpg3Lf7QHBGpL0FaD0O5VxfkQdogoWYXiAAABDC'
         file_url = '\"https://api.weixin.qq.com/cgi-bin/media/get?access_token=' + access_token + '&media_id=' + midia_id + '\"'
-        download_command ='curl -I -G ' + file_url
+        download_command ='wget ' + file_url
         tmp = os.popen(download_command).readlines()
-        print tmp
+        print download_command
