@@ -38,9 +38,16 @@ class Handle(object):
             if isinstance(recMsg, receive.Msg) and recMsg.MsgType == 'text':
                 toUser = recMsg.FromUserName
                 fromUser = recMsg.ToUserName
-                content = "test"
-                replyMsg = reply.TextMsg(toUser, fromUser, content)
-                return replyMsg.send()
+                if recMsg.MsgType == 'text':
+                    content = recMsg.Content
+                    replyMsg = reply.TextMsg(toUser, fromUser, content)
+                    return replyMsg.send()
+                elif recMsg.MsgType == 'image':
+                    mediaId = recMsg.MediaId
+                    replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
+                    return replyMsg.send()
+                else:
+                    return reply.Msg().send()
             else:
                 print "暂且不处理"
                 return "success"

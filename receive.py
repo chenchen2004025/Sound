@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import xml.etree.ElementTree as ET
+import os
 
 
 def parse_xml(web_data):
@@ -13,6 +14,8 @@ def parse_xml(web_data):
         return TextMsg(xmlData)
     elif msg_type == 'image':
         return ImageMsg(xmlData)
+    elif msg_type == 'voice':
+        return VoiceMsg(xmlData)
 
 
 class Msg(object):
@@ -35,3 +38,14 @@ class ImageMsg(Msg):
         Msg.__init__(self, xmlData)
         self.PicUrl = xmlData.find('PicUrl').text
         self.MediaId = xmlData.find('MediaId').text
+
+class VoiceMsg(Msg):
+    def __init__(self, xmlData):
+        Msg.__init__(self, xmlData)
+        self.MediaId = xmlData.find('MediaId').text
+        midia_id = xmlData.find('MediaId').text
+        access_token = 'JSjUozBnWYQ3eGnR8ESdHZHZT7RRRmxvT5aSP6cwPmCKpSfxXDbfP1BjshehoGK087TMkV1jLgcBlSYqWiRbAzxcraUR-hipk1MCpg3Lf7QHBGpL0FaD0O5VxfkQdogoWYXiAAABDC'
+        file_url = '\"https://api.weixin.qq.com/cgi-bin/media/get?access_token=' + access_token + '&media_id=' + midia_id + '\"'
+        download_command ='curl -I -G ' + file_url
+        tmp = os.popen(download_command).readlines()
+        print tmp

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 import WaveProcess
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 import web
 from handle import Handle
