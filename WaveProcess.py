@@ -150,15 +150,15 @@ def acf_coor(y, frame_number, vseg, pitch_max_cycle, pitch_min_cycle):
 
 def pitch_valid_main(path):
     suffix = "wav"
-    f = glob.glob(path + '\\*.' + suffix)
-    file_number = len(f)
+    files = glob.glob(path + '\\*.' + suffix)
+    file_number = len(files)
     period_list = []
     span_list = []
     pitch_list = []
     energy_list = []
     ind = np.zeros([file_number,2])
     for ii in range(0, file_number):
-        wave_data, time, frame_rate = read_wave_data(f[ii])
+        wave_data, time, frame_rate = read_wave_data(files[ii])
         wave_data = pre_process(wave_data, time)
         wave_data2, frame_time = enframe(wave_data[1, :], 1600, 400, time)
         frame_number = wave_data2.shape[0]
